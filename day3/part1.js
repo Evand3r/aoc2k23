@@ -18,6 +18,8 @@ dayWrapper(() => {
   const gridLines = data.split('\n').filter(line => !!line);
 
   gridLines.forEach((line, lineIndex) => {
+    if (!/[^\w|\.]/g.test(line)) return; //Ignore lines without symbols
+
     line.split('').forEach((char, charIndex) => {
       if (char.match(/[\d|\.]/)) return; //Ignore digits and dots
 
