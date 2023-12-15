@@ -18,13 +18,8 @@ const CUBELIMITS = {
 dayWrapper(() => data.split('\n')
   .filter(line => !!line)
   .filter(game => {
-    const matches = game.split(":")[1].matchAll(/(\d+) (\w+)/g);
-
-    for (const [_, val, color] of matches) {
-      if (+val > CUBELIMITS[color]) return false;
-    }
-
-    return true;
+    return !Array.from(game.split(":")[1].matchAll(/(\d+) (\w+)/g))
+      .some(([_, val, color]) => +val > CUBELIMITS[color]);
   })
   .reduce((acc, game) => acc + +game.match(/\d+/), 0)
 );
