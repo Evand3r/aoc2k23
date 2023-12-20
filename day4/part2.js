@@ -28,12 +28,10 @@ dayWrapper(() => data.split('\n')
     const currentCardName = line.split(":")[0];
     cards[currentCardName] = (cards[currentCardName] ?? 0) + 1;
 
-    for (let i = 0; i < cards[currentCardName]; i++) {
-      matched.forEach((_, j) => {
-        const cardName = array[1 + j + index].split(":")[0];
-        cards[cardName] = (cards[cardName] ?? 0) + 1;
-      })
-    }
+    matched.forEach((_, j) => {
+      const cardName = array[1 + j + index].split(":")[0];
+      cards[cardName] = (cards[cardName] ?? 0) + cards[currentCardName];
+    })
 
     return sum + cards[currentCardName];
   }, 0)
