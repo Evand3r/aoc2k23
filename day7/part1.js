@@ -26,54 +26,46 @@ const getRank = (hand) => {
     const sortedHand = hand.split('').sort().join('');
     if (rankCache.has(sortedHand)) return rankCache.get(sortedHand);
 
-    const result = {};
+    let result = '';
     const handCount = new Map([...hand.split('')
         .reduce((hcMap, label) =>
             hcMap.set(label, (hcMap.get(label) ?? 0) + 1), new Map())]
-        .sort((a, b) => {
-            const asd = b[1] - a[1];
-            return asd === 0 ? (cardValues[b[0]] - cardValues[a[0]]) : asd;
-        }));
+        .sort((a, b) => b[1] - a[1]));
 
-    result.cards = [...handCount.entries()];
-    const [highestCard] = result.cards;
+    const [highestCard] = [...handCount.entries()];
 
     if (handCount.size === 1) {
-        result.type = '5oak'
+        result = '5oak'
     } else if (handCount.size === 2) {
-        result.type = highestCard[1] === 4 ? '4oak' : 'fhouse';
+        result = highestCard[1] === 4 ? '4oak' : 'fhouse';
     } else if (handCount.size === 3) {
-        //three of a kind or two pair
-        result.type = (highestCard[1] === 3) ? '3oak' : '2pair';
+        result = (highestCard[1] === 3) ? '3oak' : '2pair';
     } else if (handCount.size === 4) {
-        result.type = '1pair';
+        result = '1pair';
     } else {
-        result.type = 'highcard';
+        result = 'highcard';
     }
 
-    rankCache.set(sortedHand, result)
+    rankCache.set(sortedHand, result);
 
     return result;
 }
 
 dayWrapper(() => data.split('\n').filter(l => !!l)
     .toSorted((l1, l2) => {
-        const hand1 = getRank(l1.split(' ')[0]);
-        const hand2 = getRank(l2.split(' ')[0]);
+        const [l1Split, l2Split] = [l1.split(' ')[0], l2.split(' ')[0]]
+        const hand1 = getRank(l1Split);
+        const hand2 = getRank(l2Split);
 
-        if (hand1.type === hand2.type) {
-            const [hand1Cards, hand2Cards] = [hand1.cards, hand2.cards];
-            for (let i = 0; i < hand1Cards.length; i++) {
-                if (hand1Cards[i][0] !== hand2Cards[i][0]) {
-                    return cardValues[hand1Cards[i][0]] - cardValues[hand2Cards[i][0]];
+        if (hand1 === hand2) {
+            for (let i = 0; i < l1Split.length; i++) {
+                if (l1Split[i] !== l2Split[i]) {
+                    return cardValues[l1Split[i]] - cardValues[l2Split[i]];
                 }
             }
             return 0;
         }
 
-        return categories[hand1.type] - categories[hand2.type];
+        return categories[hand1] - categories[hand2];
     })
     .reduce((acc, line, index, ary) => acc + (+line.split(' ')[1] * (index + 1)), 0))
-
-//247261230 too high
-//247255339 too high
