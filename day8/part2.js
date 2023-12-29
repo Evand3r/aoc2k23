@@ -15,19 +15,20 @@ XXX = (XXX, XXX)
 const { data } = useData(testData);
 
 dayWrapper(() => {
-    let current = [];
-    let count = [];
+    const nodeLabels = [];
+    const counts = [];
 
     const directions = data.split('\n\n')[0].split('');
     const dict = data.split('\n\n')[1].split('\n').filter(l => !!l).reduce((accMap, line) => {
         const [label, L, R] = Array.from(line.matchAll(/(\w+)/g), m => m[0]);
-        if (label.at(-1) === 'A') current.push(label);
+        if (label.at(-1) === 'A') nodeLabels.push(label);
 
         return accMap.set(label, { L, R });
     }, new Map())
 
-    for (let currentLabel of current) {
+    for (let currentLabel of nodeLabels) {
         let localCount = 0;
+
         while (currentLabel.at(-1) !== 'Z') {
             const options = dict.get(currentLabel);
             const direction = directions[localCount % directions.length];
@@ -35,8 +36,15 @@ dayWrapper(() => {
             currentLabel = options[direction];
             localCount++;
         }
-        count.push(localCount);
+
+        counts.push(localCount);
     }
 
-    return count;
-})
+    return counts;
+});
+
+/**
+ * LCM should be applied to the results array to 
+ * get the puzzle result. More information:
+ * https://old.reddit.com/r/adventofcode/comments/18e6vdf/2023_day_8_part_2_an_explanation_for_why_the/
+ */
