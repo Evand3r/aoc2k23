@@ -1,4 +1,4 @@
-import { dayWrapper, useData } from "../common.js";
+import { dayWrapper, getNumbers, useData } from "../common.js";
 
 const testData = `seeds: 79 14 55 13
 
@@ -35,8 +35,6 @@ humidity-to-location map:
 56 93 4`;
 
 const { data } = useData(testData);
-
-const getNumbers = str => Array.from(str.matchAll(/(\d+)/g), m => +m[1])
 
 dayWrapper(() => {
   const [seedsN, ...categories] = data.split('\n\n');

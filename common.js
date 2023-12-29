@@ -6,6 +6,8 @@ const isTesting = argv[2] === '-test';
 
 let data = isTesting ? null : readFileSync(inputFileName, 'utf-8');
 
+export const getNumbers = str => Array.from(str.matchAll(/(\d+)/g), m => +m[1]);
+
 export function useData(testData = null) {
   return { data: data ?? testData };
 }
