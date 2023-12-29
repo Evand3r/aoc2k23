@@ -16,7 +16,7 @@ const { data } = useData(testData);
 
 dayWrapper(() => {
     let current = [];
-    let count = 0;
+    let count = [];
 
     const directions = data.split('\n\n')[0].split('');
     const dict = data.split('\n\n')[1].split('\n').filter(l => !!l).reduce((accMap, line) => {
@@ -26,12 +26,16 @@ dayWrapper(() => {
         return accMap.set(label, { L, R });
     }, new Map())
 
-    while (current.some(label => label.at(-1) !== 'Z')) {
-        const options = current.map(label => dict.get(label));
-        const direction = directions[count % directions.length];
+    for (let currentLabel of current) {
+        let localCount = 0;
+        while (currentLabel.at(-1) !== 'Z') {
+            const options = dict.get(currentLabel);
+            const direction = directions[localCount % directions.length];
 
-        current = options.map(option => option[direction]);
-        count++;
+            currentLabel = options[direction];
+            localCount++;
+        }
+        count.push(localCount);
     }
 
     return count;
